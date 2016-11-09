@@ -12,6 +12,7 @@ import java.util.UUID;
 public class StoreServer implements Runnable {
 	
 	private Map<UUID,Employee> employees;
+	private Map<UUID,Session> openSessions;
 	
 	public StoreServer () {
 		this.employees = new HashMap<UUID,Employee>();
@@ -68,6 +69,7 @@ public class StoreServer implements Runnable {
 					break;
 				case UPDATE_EMPLOYEE:
 					Employee tempEmployee = (Employee)command.getContent();
+					StoreServer.this.employees.put(tempEmployee.getID(), tempEmployee);
 					break;
 				case OPEN_SESSION:
 					break;
