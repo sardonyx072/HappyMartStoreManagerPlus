@@ -1,68 +1,70 @@
 package com.happymart;
 
 import java.util.Date;
+import java.util.UUID;
 
 public class Employee {
-	private long id;
-	private String firstName;
-	private String middleNameOrInitial;
-	private String lastName;
-	private String username;
-	private String password;
+	private UUID id;
+	private Name name;
+	private Credentials credentials;
 	private Date employeeSince;
 	
-	public Employee (long id, String firstName, String middleNameOrInitial, String lastName, String username) {
+	public Employee (UUID id, Name name, String username) {
 		this.id = id;
-		this.firstName = firstName;
-		this.middleNameOrInitial = middleNameOrInitial;
-		this.lastName = lastName;
-		this.username = username;
+		this.name = name;
+		this.credentials = new Credentials(username,"pw");
 		this.employeeSince = new Date();
-		this.password = "pw";
 	}
-	public Employee (long id, String firstName, String lastName, String username) {
-		this(id,firstName,"",lastName,username);
-	}
-	public long getID() {
+	
+	public UUID getID() {
 		return this.id;
 	}
 	public String getFirstName() {
-		return firstName;
+		return this.name.getFirstName();
 	}
 	public void setFirstName(String firstName) {
-		this.firstName = firstName;
+		this.name.setFirstName(firstName);
 	}
 	public String getMiddleNameOrInitial() {
-		return middleNameOrInitial;
+		return this.name.getMiddleNameOrInitial();
 	}
 	public void setMiddleNameOrInitial(String middleNameOrInitial) {
-		this.middleNameOrInitial = middleNameOrInitial;
+		this.name.setMiddleNameOrInitial(middleNameOrInitial);
 	}
 	public String getLastName() {
-		return lastName;
+		return this.name.getLastName();
 	}
 	public void setLastName(String lastName) {
-		this.lastName = lastName;
+		this.name.setLastName(lastName);
+	}
+	public String getLegalName() {
+		return this.name.getLegalName();
+	}
+	public String getShortName() {
+		return this.name.getShortName();
+	}
+	public String getDictName() {
+		return this.name.getDictName();
+	}
+	public String getUsernamePrefix() {
+		return this.getUsername().replaceAll("[0-9]", "");
 	}
 	public String getUsername() {
-		return username;
+		return this.credentials.getUsername();
 	}
 	public void setUsername(String username) {
-		this.username = username;
+		this.credentials.setUsername(username);
 	}
 	public String getPassword() {
-		return password;
+		return this.credentials.getPassword();
 	}
 	public void setPassword(String password) {
-		this.password = password;
+		this.credentials.setPassword(password);
 	}
 	public Date getEmployeeSince() {
 		return employeeSince;
 	}
-	public String getLegalName() {
-		return this.firstName + " " + this.middleNameOrInitial + " " + this.lastName;
-	}
 	public String toString() {
-		return this.firstName + " " + this.middleNameOrInitial + " " + this.lastName;
+		return this.getLegalName();
 	}
 }
