@@ -1,27 +1,55 @@
 package com.happymart;
 
+import java.util.UUID;
+
 public class ItemQuantity {
+	private UUID id;
 	private ItemType type;
 	private int quantity;
 	
 	public ItemQuantity (ItemType type, int quantity) {
 		this.type = type;
-		this.quantity = quantity;
+		if (quantity >= 0) {
+			this.quantity = quantity;
+		}
+		else {
+			throw new IllegalArgumentException("Cannot have a negative quantity!");
+		}
 	}
-	public ItemType getItem() {
-		return this.getItem();
+	public ItemType getItemType() {
+		return this.type;
 	}
 	public int getQuantity() {
 		return this.quantity;
 	}
 	public void setQuantity(int quantity) {
-		this.quantity = quantity;
+		if (quantity >= 0) {
+			this.quantity = quantity;
+		}
+		else {
+			throw new IllegalArgumentException("Cannot have a negative quantity!");
+		}
 	}
 	public void addQuantity(int quantity) {
-		this.quantity += quantity;
+		if (quantity >= 0) {
+			this.quantity += quantity;
+		}
+		else {
+			throw new IllegalArgumentException("Cannot add a negative quantity!");
+		}
 	}
 	public void subtractQuantity(int quantity) {
-		this.quantity -= quantity;
+		if (quantity >= 0) {
+			if (this.quantity - quantity >= 0) {
+				this.quantity -= quantity;
+			}
+			else {
+				throw new IllegalArgumentException("Cannot have a negative quantity!");
+			}
+		}
+		else {
+			throw new IllegalArgumentException("Cannot subtract a negative quantity!");
+		}
 	}
 	public int getTotalWorthInUSCents() {
 		return this.quantity*this.type.getPriceInUSCents();

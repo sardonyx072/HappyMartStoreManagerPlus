@@ -1,18 +1,25 @@
 package com.happymart;
 
+import java.util.UUID;
+
 public class ItemType {
+	private UUID id;
 	private String name;
 	private String unitName;
 	private int priceInUSCents;
 	private String storeNotes; //can include manufacturer or supplier
 	
-	public ItemType (String name, String unitName, int priceInUSCents, String storeNotes) {
+	public ItemType (UUID id, String name, String unitName, int priceInUSCents, String storeNotes) {
+		this.id = id;
 		this.setName(name);
 		this.setUnitName(unitName);
 		this.setPriceInUSCents(priceInUSCents);
 		this.setStoreNotes(storeNotes);
 	}
 
+	public UUID getID() {
+		return this.id;
+	}
 	public String getName() {
 		return name;
 	}

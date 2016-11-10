@@ -23,6 +23,9 @@ public class Credentials implements Serializable {
 	public void setPassword(String password) {
 		this.password = password;
 	}
+	public boolean equals(Credentials other) {
+		return this.username.equals(other.username) && this.password.equals(other.password);
+	}
 	public String toString() {
 		return "{" + this.username + "," + this.password + "}";
 	}

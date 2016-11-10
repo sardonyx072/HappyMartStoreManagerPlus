@@ -4,23 +4,26 @@ import java.util.Date;
 import java.util.UUID;
 
 public class Session {
-	private Employee employee;
-	private UUID terminalUUID;
+	private UUID id;
+	private SessionInfo sessionInfo;
 	private Date sessionOpenTimestamp;
 	private Date sessionCloseTimestamp;
 	
-	public Session (Employee employee, UUID terminalUUID) {
-		this.employee = employee;
-		this.terminalUUID = terminalUUID;
+	public Session (UUID id, SessionInfo sessionInfo) {
+		this.id = id;
+		this.sessionInfo = sessionInfo;
 		this.sessionOpenTimestamp = new Date();
 		this.sessionCloseTimestamp = null;
 	}
 	
+	public UUID getID() {
+		return this.id;
+	}
 	public Employee getEmployee() {
-		return this.employee;
+		return this.sessionInfo.getEmployee();
 	}
 	public UUID getTerminalUUID() {
-		return this.terminalUUID;
+		return this.sessionInfo.getTerminalUUID();
 	}
 	public Date getSessionOpenTimestamp() {
 		return this.sessionOpenTimestamp;

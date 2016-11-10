@@ -1,5 +1,7 @@
 package com.happymart;
 
+import java.util.UUID;
+
 public class ItemQuantityManaged extends ItemQuantity {
 	private int minimum;
 	

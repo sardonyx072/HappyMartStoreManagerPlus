@@ -46,6 +46,12 @@ public class Employee {
 	public String getDictName() {
 		return this.name.getDictName();
 	}
+	public Credentials getCredentials() {
+		return this.credentials;
+	}
+	public void setCredentials(Credentials credentials) {
+		this.credentials = credentials;
+	}
 	public String getUsernamePrefix() {
 		return this.getUsername().replaceAll("[0-9]", "");
 	}
