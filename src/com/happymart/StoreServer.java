@@ -1,5 +1,6 @@
 package com.happymart;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -11,11 +12,41 @@ import java.util.UUID;
 
 public class StoreServer implements Runnable {
 	
+	private StoreInformation storeInfo;
 	private Map<UUID,Employee> employees;
 	private Map<UUID,Session> openSessions;
+	private final String filepath = "C:\\Program Files\\HappyMart";
 	
 	public StoreServer () {
 		this.employees = new HashMap<UUID,Employee>();
+		this.openSessions = new HashMap<UUID,Session>();
+		
+		FileInputStream fileIn;
+		ObjectInputStream objectIn;
+
+		try {
+			fileIn = new FileInputStream(this.filepath + "\\store\\info");
+			objectIn = new ObjectInputStream(fileIn);
+			this.storeInfo = (StoreInformation)objectIn.readObject();
+		} catch (IOException e) {
+		} catch (ClassNotFoundException e) {
+		}
+		try {
+			fileIn = new FileInputStream(this.filepath + "\\store\\employees");
+			objectIn = new ObjectInputStream(fileIn);
+			this.employees = (HashMap<UUID,Employee>)objectIn.readObject();
+		} catch (IOException e) {
+		} catch (ClassNotFoundException e) {
+		}
+		
+		if (this.employees.size() == 0) {
+			UUID temp = this.getUniqueUUID();
+			this.employees.put(temp, new Employee(temp,new Name("admin","","admin"),"admin"));
+		}
+	}
+	
+	private synchronized UUID getUniqueUUID() {
+		return UUID.randomUUID();
 	}
 	
 	@Override
@@ -53,6 +84,10 @@ public class StoreServer implements Runnable {
 				
 				Command<?> command = (Command<?>) in.readObject();
 				switch (command.getType()) {
+				case UPDATE_STORE:
+					StoreInformation tempStore = (StoreInformation)command.getContent();
+					StoreServer.this.storeInfo = tempStore;
+					break;
 				case CREATE_EMPLOYEE:
 					Name tempName = (Name)command.getContent();
 					String usernamePrefix = tempName.getLastName().substring(0,Math.min(5, tempName.getLastName().length())) + tempName.getFirstName().substring(0, 1);
@@ -62,7 +97,7 @@ public class StoreServer implements Runnable {
 							uniqueNumber++;
 						}
 					}
-					UUID newEmployeeUUID = UUID.randomUUID();
+					UUID newEmployeeUUID = StoreServer.this.getUniqueUUID();
 					StoreServer.this.employees.put(newEmployeeUUID,new Employee(newEmployeeUUID,tempName,usernamePrefix+uniqueNumber));
 					Response<String> response = new Response<String>(ResponseType.SUCCESS,"user " + StoreServer.this.employees.get(newEmployeeUUID).getUsername() + " created successfully!");
 					out.writeObject(response);
@@ -71,11 +106,17 @@ public class StoreServer implements Runnable {
 					Employee tempEmployee = (Employee)command.getContent();
 					StoreServer.this.employees.put(tempEmployee.getID(), tempEmployee);
 					break;
+				case CHECK_CREDENTIALS:
+					break;
 				case OPEN_SESSION:
 					break;
 				case CLOSE_SESSION:
 					break;
 				case LOG_ACTIVITY:
+					break;
+				case CHECK_INVENTORY:
+					break;
+				case MODIFY_QUANTITY:
 					break;
 				default:
 					break;

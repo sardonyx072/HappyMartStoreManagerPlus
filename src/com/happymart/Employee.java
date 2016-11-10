@@ -12,7 +12,7 @@ public class Employee {
 	public Employee (UUID id, Name name, String username) {
 		this.id = id;
 		this.name = name;
-		this.credentials = new Credentials(username,"pw");
+		this.credentials = new Credentials(username,"password");
 		this.employeeSince = new Date();
 	}
 	
