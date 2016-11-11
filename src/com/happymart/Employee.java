@@ -1,9 +1,10 @@
 package com.happymart;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.UUID;
 
-public class Employee {
+public class Employee implements Serializable {
 	private UUID id;
 	private Name name;
 	private Credentials credentials;

@@ -78,6 +78,9 @@ public class StoreServer implements Runnable {
 		//run server
 		try {
 			server = new ServerSocket(9876);
+			server.setReuseAddress(true);
+			System.out.println("\u001b[2J");
+			System.out.println("Happy Mart Store Manager Server now running!");
 			while ((connection = server.accept()) != null) {
 				new Thread(new ClientHandler(connection)).start();
 			}
@@ -136,6 +139,28 @@ public class StoreServer implements Runnable {
 						response = new Response<String>(ResponseType.FAILURE,"Bad command sent! Could not understand content!");
 					}
 					break;
+				case GET_UNIQUE_UUID:
+					response = new Response<UUID>(ResponseType.SUCCESS,StoreServer.this.getUniqueUUID());
+					break;
+				case SAVE_SERVER_STATE:
+					try {
+						ObjectOutputStream objectOut = null;
+						FileOutputStream fileOut = null;
+						fileOut = new FileOutputStream(StoreServer.this.filepath + "\\store\\info");
+						objectOut = new ObjectOutputStream(fileOut);
+						objectOut.writeObject(StoreServer.this.storeInfo);
+						fileOut = new FileOutputStream(StoreServer.this.filepath + "\\store\\employees");
+						objectOut = new ObjectOutputStream(fileOut);
+						objectOut.writeObject(StoreServer.this.employees);
+						fileOut = new FileOutputStream(StoreServer.this.filepath + "\\store\\inventory");
+						objectOut = new ObjectOutputStream(fileOut);
+						objectOut.writeObject(StoreServer.this.inventory);
+						objectOut.close();
+					} catch (IOException e) {
+						
+					}
+					response = new Response<String>(ResponseType.SUCCESS,"Save server state!");
+					break;
 				case CREATE_EMPLOYEE:
 					try {
 						Name temp_CREATE_EMPLOYEE = (Name)command.getContent();
@@ -162,7 +187,27 @@ public class StoreServer implements Runnable {
 						response = new Response<String>(ResponseType.FAILURE,"Bad command sent! Could not understand content!");
 					}
 					break;
-				case CHECK_CREDENTIALS:
+				case CHECK_CREDENTIALS_GENERIC:
+					try {
+						Credentials temp_CHECK_CREDENTIALS = (Credentials)command.getContent();
+						Employee found = null;
+						for (Employee i : StoreServer.this.employees.values()) {
+							if (i.getCredentials().equals(temp_CHECK_CREDENTIALS)) {
+								found = i;
+								break;
+							}
+						}
+						if (found != null) {
+							response = new Response<Employee>(ResponseType.SUCCESS,found);
+						}
+						else {
+							response = new Response<String>(ResponseType.FAILURE,"Invalid credentials");
+						}
+					} catch (ClassCastException e) {
+						response = new Response<String>(ResponseType.FAILURE,"Bad command sent! Could not understand content!");
+					}
+					break;
+				case CHECK_CREDENTIALS_FOR_ME:
 					try {
 						Employee temp_CHECK_CREDENTIALS = (Employee)command.getContent();
 						response = new Response<Boolean>(ResponseType.SUCCESS,StoreServer.this.employees.get(temp_CHECK_CREDENTIALS.getID()).getCredentials().equals(temp_CHECK_CREDENTIALS.getCredentials()));
@@ -173,6 +218,7 @@ public class StoreServer implements Runnable {
 				case OPEN_SESSION:
 					try {
 						SessionInfo temp_OPEN_SESSION = (SessionInfo)command.getContent();
+						System.out.println("Opening session for " + temp_OPEN_SESSION.getEmployee());
 						UUID newSessionUUID = StoreServer.this.getUniqueUUID();
 						StoreServer.this.openSessions.put(newSessionUUID, new Session(newSessionUUID,temp_OPEN_SESSION));
 						response = new Response<UUID>(ResponseType.SUCCESS,newSessionUUID);

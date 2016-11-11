@@ -1,6 +1,8 @@
 package com.happymart;
 
-public class Command<T> {
+import java.io.Serializable;
+
+public class Command<T> implements Serializable {
 	private CommandType type;
 	private T content;
 	

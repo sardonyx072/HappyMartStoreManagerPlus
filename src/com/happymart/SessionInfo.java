@@ -1,8 +1,9 @@
 package com.happymart;
 
+import java.io.Serializable;
 import java.util.UUID;
 
-public class SessionInfo {
+public class SessionInfo implements Serializable {
 	private Employee employee;
 	private UUID terminalUUID;
 	

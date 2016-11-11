@@ -1,6 +1,8 @@
 package com.happymart;
 
-public class Response<T> {
+import java.io.Serializable;
+
+public class Response<T> implements Serializable {
 	private ResponseType type;
 	private T content;
 	
