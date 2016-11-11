@@ -65,9 +65,30 @@ public class Terminal implements Runnable {
 				do {
 					redoLogin = false;
 					credentials = new Credentials(credentialsRaw[0],credentialsRaw[1]);
-					if (StoreClient.command(this.serverIP, new Command<Credentials>(CommandType.CHECK_CREDENTIALS_GENERIC,credentials), this.employee)
-							&& StoreClient.command(this.serverIP, new Command<SessionInfo>(CommandType.OPEN_SESSION,new SessionInfo(this.employee,this.terminalID)), this.sessionID)) {
-						Object sessionHomeResponse = DisplayState.TERMINAL_HOME.showAndRequestInput(this.employee.getFirstName());
+					Object credentialsResponse = StoreClient.command(this.serverIP, new Command<Credentials>(CommandType.CHECK_CREDENTIALS_GENERIC,credentials));
+					if (credentialsResponse.getClass() != Boolean.class) {
+						Object sessionResponse = StoreClient.command(this.serverIP, new Command<SessionInfo>(CommandType.OPEN_SESSION,new SessionInfo(this.employee,this.terminalID)));
+						if (sessionResponse.getClass() != Boolean.class) {
+							Object sessionHomeResponse = DisplayState.TERMINAL_HOME.showAndRequestInput(this.employee.getFirstName());
+							if (sessionHomeResponse.getClass() != Boolean.class) {
+								String sessionHomeChoice = ((String[])sessionHomeResponse)[0];
+								if (sessionHomeChoice.equals("`")) {
+									Object confirmCloseSessionResponse = DisplayState.CLOSE_SESSION.showAndRequestInput();
+									if (confirmCloseSessionResponse.getClass() != Boolean.class) {
+										Object closeSessionResponse = StoreClient.command(this.serverIP, new Command<UUID>(CommandType.CLOSE_SESSION,this.sessionID));
+										if (closeSessionResponse.getClass() != Boolean.class) {
+											
+										}
+									}
+								}
+							}
+						}
+						else {
+							redoLogin = true;
+						}
+					}
+					else {
+						redoLogin = true;
 					}
 				} while (redoLogin);
 			}

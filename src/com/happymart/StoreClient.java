@@ -7,7 +7,7 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 
 public class StoreClient {
-	public static boolean command (String serverIP, Command<?> command, Object response) {
+	public static Object command (String serverIP, Command<?> command) {
 		try {
 			Socket connection = new Socket(serverIP,9876);
 			ObjectOutputStream out = new ObjectOutputStream(connection.getOutputStream());
@@ -15,18 +15,17 @@ public class StoreClient {
 			out.writeObject(command);
 			Response<?> back = (Response<?>)in.readObject();
 			if (back.getType() == ResponseType.SUCCESS) {
-				response = back.getContent();
+				return back.getContent();
 			}
 			else {
-				return false;
+				return new Boolean(false);
 			}
 		} catch (UnknownHostException e) {
-			return false;
+			return new Boolean(false);
 		} catch (IOException e) {
-			return false;
+			return new Boolean(false);
 		} catch (ClassNotFoundException e) {
-			return false;
+			return new Boolean(false);
 		}
-		return true;
 	}
 }
