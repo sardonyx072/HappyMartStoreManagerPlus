@@ -81,6 +81,9 @@ public class Terminal implements Runnable {
 										}
 									}
 								}
+								else if (sessionHomeChoice.equals("0")) {
+									
+								}
 							}
 						}
 						else {

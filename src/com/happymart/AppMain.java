@@ -1,5 +1,6 @@
 package com.happymart;
 
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class AppMain {
@@ -26,7 +27,9 @@ public class AppMain {
 					app = new AppRegister();
 					app.launch(app);
 				}
-			} catch (Exception e) {}
+			} catch (InputMismatchException e) {
+				scan.next();
+			}
 		} while (!ok);
 	}
 }

@@ -6,7 +6,7 @@ import java.util.UUID;
 public class ItemQuantity implements Serializable {
 	private UUID id;
 	private ItemType type;
-	private int quantity;
+	protected int quantity;
 	
 	public ItemQuantity (ItemType type, int quantity) {
 		this.type = type;
